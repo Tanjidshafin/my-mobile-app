@@ -1,6 +1,5 @@
 import { Text, View } from 'react-native';
-
-import { EditScreenInfo } from './EditScreenInfo';
+import Navbar from './Navbar';
 
 type ScreenContentProps = {
   path: string;
@@ -9,10 +8,10 @@ type ScreenContentProps = {
 
 export const ScreenContent = ({ path, children }: ScreenContentProps) => {
   return (
-    <View className={styles.container}>
+    <View>
       <View className={styles.separator} />
-      <EditScreenInfo path={path} />
       {children}
+      <Navbar />
     </View>
   );
 };
