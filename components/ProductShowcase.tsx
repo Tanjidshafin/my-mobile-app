@@ -15,13 +15,14 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { mockProducts } from 'hooks/mockProducts';
 import type { Product } from '../types';
+import { useUser } from 'context/UserContext';
 
 interface ProductShowcaseProps {
   user?: any;
 }
 
 export default function ProductShowcase() {
-  const user = { name: 'Safin' };
+  const { user } = useUser();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [animatedValues] = useState(mockProducts.map(() => new Animated.Value(0)));
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -138,7 +139,7 @@ export default function ProductShowcase() {
                 <Text className="text-sm leading-5 text-gray-600">{product.description}</Text>
               </View>
             </View>
-            <View className="flex-row items-center space-x-4">
+            <View className="mt-2 flex-row items-center space-x-4">
               <View className="flex-row items-center">
                 <Ionicons name="time" size={16} color="#f97316" />
                 <Text className="ml-1 text-xs font-medium text-gray-600">
@@ -146,7 +147,7 @@ export default function ProductShowcase() {
                 </Text>
               </View>
             </View>
-            <View className="flex-row items-center justify-between border-t border-gray-100 pt-4">
+            <View className="mt-4 flex-row items-center justify-between border-t border-gray-100 pt-4">
               <View>
                 <Text className="text-2xl font-extrabold text-orange-500">${product.price}</Text>
                 <Text className="text-xs font-medium text-gray-500">per serving</Text>
@@ -155,9 +156,13 @@ export default function ProductShowcase() {
               <TouchableOpacity
                 onPress={() => handleProductPress(product, index)}
                 className="rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 shadow-lg">
-                <Text className="font-bold text-white">
-                  {user ? 'View Details' : 'Login to View'}
-                </Text>
+                {user ? (
+                  <Text className="font-bold text-orange-500">View Details</Text>
+                ) : (
+                  <Text disabled={true} className="font-bold text-orange-500">
+                    Login to View
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>

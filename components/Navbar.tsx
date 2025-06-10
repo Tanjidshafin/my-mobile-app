@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useUser } from 'context/UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 interface NavbarProps {
   onMenuPress?: () => void;
@@ -10,7 +12,8 @@ interface NavbarProps {
 
 export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
   const [animatedValue] = useState(new Animated.Value(0));
-  let user = { name: 'Tanjid Karim Shafin', points: 100 };
+  const navigation = useNavigation();
+  const { user } = useUser();
   const handleLogoPress = () => {
     Animated.sequence([
       Animated.timing(animatedValue, {
@@ -60,7 +63,7 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
 
               {/* Profile */}
               <TouchableOpacity
-                // onPress={() => router.push('/profile')}
+                onPress={() => navigation.navigate('Login')}
                 className="rounded-full bg-white/20 p-2">
                 <Ionicons name="person" size={20} color="#fbbf24" />
               </TouchableOpacity>
