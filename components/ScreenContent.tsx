@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Navbar from './Navbar';
 import Home from './Home';
 import Footer from './Footer';
@@ -9,13 +9,14 @@ type ScreenContentProps = {
 };
 
 export const ScreenContent = ({ path, children }: ScreenContentProps) => {
-  
   return (
     <View className="flex-1">
-      <View className={styles.separator} />
-      <Navbar />
-      <View className="flex-1">{children || <Home />}</View>
-      <Footer />
+      <ScrollView>
+        <View className={styles.separator} />
+        <Navbar />
+        <View className="flex-1">{children || <Home />}</View>
+        <Footer />
+      </ScrollView>
     </View>
   );
 };
