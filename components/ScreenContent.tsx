@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 import Navbar from './Navbar';
+import Home from './Home';
 
 type ScreenContentProps = {
   path: string;
@@ -12,6 +13,9 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
       <View className={styles.separator} />
       {children}
       <Navbar />
+      <View className="px-4">
+        <Home />
+      </View>
     </View>
   );
 };

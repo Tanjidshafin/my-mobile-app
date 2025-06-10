@@ -1,37 +1,98 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+'use client';
 
-const Navbar = () => {
+import { useState } from 'react';
+import { View, Text, TouchableOpacity, Animated, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+interface NavbarProps {
+  onMenuPress?: () => void;
+}
+
+export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
+  const [animatedValue] = useState(new Animated.Value(0));
+  let user = null;
+
+  const handleLogoPress = () => {
+    Animated.sequence([
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    //Home Route
+  };
+
+  const logoScale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.1],
+  });
+
   return (
-    <View className="bg-[#e91e63] px-4 pb-4 pt-10">
-      <View className="mb-4 flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <Ionicons name="location-outline" size={28} color="white" />
-          <View className="ml-2">
-            <Text className="text-2xl font-bold text-white">Birinchi Road</Text>
-            <Text className="text-lg text-white">Feni</Text>
+    <View className="bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 pt-12 shadow-lg">
+      <View className="flex-row items-center justify-between">
+        {/* Logo Section */}
+        <TouchableOpacity onPress={handleLogoPress} className="flex-row items-center">
+          <Animated.View style={{ transform: [{ scale: logoScale }] }}>
+            <View className="mr-3 rounded-full bg-white p-2 shadow-md">
+              <Ionicons name="restaurant" size={24} color="#f97316" />
+            </View>
+          </Animated.View>
+          <View>
+            <Text className="text-xl font-bold text-orange-700">FoodieHub</Text>
+            <Text className="text-xs text-orange-500">Delicious Moments</Text>
           </View>
-        </View>
-        <View className="flex-row">
-          <TouchableOpacity className="ml-5">
-            <Ionicons name="heart-outline" size={28} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity className="ml-5">
-            <MaterialIcons name="shopping-basket" size={28} color="white" />
+        </TouchableOpacity>
+
+        {/* Right Section */}
+        <View className="flex-row items-center space-x-3">
+          {user ? (
+            <View className="flex-row items-center space-x-3">
+              {/* Points Display */}
+              <View className="flex-row items-center rounded-full bg-white/20 px-3 py-1">
+                <Ionicons name="star" size={16} color="#fbbf24" />
+                <Text className="ml-1 font-semibold text-orange-500">{user?.points || 0}</Text>
+              </View>
+
+              {/* Profile */}
+              <TouchableOpacity
+                // onPress={() => router.push('/profile')}
+                className="rounded-full bg-white/20 p-2">
+                <Ionicons name="person" size={20} color="white" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              // onPress={() => router.push('/login')}
+              className="rounded-full bg-gray-100 px-4 py-2 shadow-md">
+              <Text className="font-semibold text-orange-500">Login</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Menu Button */}
+          <TouchableOpacity onPress={onMenuPress} className="rounded-full bg-white/20 p-2">
+            <Ionicons name="menu" size={24} color="#fbbf24" />
           </TouchableOpacity>
         </View>
       </View>
-      <View className="h-12 flex-row items-center rounded-full bg-white px-4">
-        <Ionicons name="search" size={24} color="#777" className="mr-2" />
+
+      {/* Search Bar */}
+      <View className="mt-4 flex-row items-center rounded-full bg-white px-4 py-1 shadow-lg">
+        <Ionicons name="search" size={20} color="#9ca3af" />
         <TextInput
-          className="flex-1 text-base text-gray-800"
-          placeholder="Search for restaurants and groceries"
-          placeholderTextColor="#777"
+          className="ml-3 flex-1 font-medium text-gray-700"
+          placeholder="Search for delicious food..."
+          placeholderTextColor="#9ca3af"
         />
+        <TouchableOpacity className="ml-2 rounded-full bg-orange-500 p-2 shadow-md active:opacity-80">
+          <Ionicons name="options" size={18} color="white" />
+        </TouchableOpacity>
       </View>
     </View>
   );
-};
-
-export default Navbar;
+}
