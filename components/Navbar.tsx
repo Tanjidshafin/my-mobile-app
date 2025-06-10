@@ -10,8 +10,7 @@ interface NavbarProps {
 
 export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
   const [animatedValue] = useState(new Animated.Value(0));
-  let user = null;
-
+  let user = { name: 'Tanjid Karim Shafin', points: 100 };
   const handleLogoPress = () => {
     Animated.sequence([
       Animated.timing(animatedValue, {
@@ -63,7 +62,7 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               <TouchableOpacity
                 // onPress={() => router.push('/profile')}
                 className="rounded-full bg-white/20 p-2">
-                <Ionicons name="person" size={20} color="white" />
+                <Ionicons name="person" size={20} color="#fbbf24" />
               </TouchableOpacity>
             </View>
           ) : (
