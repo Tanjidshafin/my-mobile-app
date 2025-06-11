@@ -62,7 +62,11 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               </View>
 
               {/* Profile */}
-              <TouchableOpacity className="rounded-full bg-white/20 p-2">
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile')
+                }}
+                className="rounded-full bg-white/20 p-2">
                 <Ionicons name="person" size={20} color="#fbbf24" />
               </TouchableOpacity>
               {/* Logout */}

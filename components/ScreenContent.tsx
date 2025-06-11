@@ -8,6 +8,7 @@ import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
 import ProductDetails from './ProductDetails';
 import { useUser } from 'context/UserContext';
+import ProfileScreen from './ProfileScreen';
 
 type ScreenContentProps = {
   path?: string;
@@ -31,20 +32,19 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
+        {/* Always available routes */}
         <Stack.Screen name="Home" options={{ headerShown: false }}>
           {() => <MainContent>{children}</MainContent>}
         </Stack.Screen>
-        {!user && (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
-          </>
-        )}
+
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
