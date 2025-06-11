@@ -13,7 +13,7 @@ interface NavbarProps {
 export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
   const [animatedValue] = useState(new Animated.Value(0));
   const navigation = useNavigation();
-  const { user } = useUser();
+  const { user, logout } = useUser();
   const handleLogoPress = () => {
     Animated.sequence([
       Animated.timing(animatedValue, {
@@ -65,6 +65,10 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               <TouchableOpacity className="rounded-full bg-white/20 p-2">
                 <Ionicons name="person" size={20} color="#fbbf24" />
               </TouchableOpacity>
+              {/* Logout */}
+              <TouchableOpacity onPress={() => logout()} className="rounded-full bg-white/20 p-1">
+                <Ionicons name="log-out-outline" size={16} color="#EF4444" />
+              </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
@@ -73,14 +77,6 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               <Text className="font-semibold text-orange-500">Login</Text>
             </TouchableOpacity>
           )}
-
-          {/* Menu Button */}
-          <TouchableOpacity
-            //  onPress={onMenuPress}
-            onPress={() => navigation.navigate('Signup')}
-            className="rounded-full bg-white/20 p-2">
-            <Ionicons name="menu" size={24} color="#fbbf24" />
-          </TouchableOpacity>
         </View>
       </View>
 

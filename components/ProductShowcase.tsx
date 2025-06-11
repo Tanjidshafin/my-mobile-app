@@ -168,17 +168,23 @@ export default function ProductShowcase() {
                 <Text className="text-xs font-medium text-gray-500">per serving</Text>
               </View>
 
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('ProductDetails', { id: product._id });
-                }}
-                className="rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 shadow-lg">
+              <TouchableOpacity className="rounded-full bg-orange-500 px-6 py-3 shadow-lg">
                 {user ? (
-                  <Text className="font-bold text-orange-500">View Details</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('ProductDetails', { id: product._id });
+                    }}>
+                    <Text className="font-bold text-white">View Details</Text>
+                  </TouchableOpacity>
                 ) : (
-                  <Text disabled={true} className="font-bold text-orange-500">
-                    Login to View
-                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('Login');
+                    }}>
+                    <Text disabled={true} className="font-bold text-white">
+                      Login to View
+                    </Text>
+                  </TouchableOpacity>
                 )}
               </TouchableOpacity>
             </View>

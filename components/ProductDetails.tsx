@@ -67,34 +67,52 @@ export default function ProductDetails() {
     ]).start();
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product || !user) return;
-    const basePrice = product.price * quantity;
+    const basePrice = Number(product.price) * Number(quantity);
     const discountInfo = calculateDiscount(basePrice, pointsToUse);
-    if (pointsToUse > 0) {
-      const success = redeemPoints(discountInfo.pointsUsed);
-      if (!success) {
-        Alert.alert('Insufficient Points', "You don't have enough points for this discount.");
+    if (isNaN(basePrice) || isNaN(discountInfo.finalPrice)) {
+      Alert.alert('Error', 'Invalid price calculation. Please try again.');
+      return;
+    }
+    try {
+      if (pointsToUse > 0 && discountInfo.pointsUsed > 0) {
+        const redeemSuccess = await redeemPoints(
+          discountInfo.pointsUsed,
+          `Discount on ${product.name}`
+        );
+        if (!redeemSuccess) {
+          Alert.alert('Insufficient Points', "You don't have enough points for this discount.");
+          return;
+        }
+      }
+      const pointsEarnedDecimal = discountInfo.finalPrice * 0.05;
+      const earnedPoints = Math.floor(pointsEarnedDecimal * 10);
+      if (isNaN(earnedPoints) || earnedPoints < 0) {
+        console.warn('Invalid earned points calculation:', earnedPoints);
         return;
       }
+      if (earnedPoints > 0) {
+        await addPoints(earnedPoints, `Purchase of ${product.name}`);
+      }
+
+      Alert.alert(
+        'Added to Cart!',
+        `${product.name} x${quantity} added to cart!\n\n` +
+          `Final Price: $${discountInfo.finalPrice.toFixed(2)}\n` +
+          `Points Used: ${discountInfo.pointsUsed}\n` +
+          `Points Earned: ${earnedPoints}`,
+        [{ text: 'Continue Shopping', onPress: () => navigation.goBack() }]
+      );
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      Alert.alert('Error', 'Failed to add item to cart. Please try again.');
     }
-
-    const earnedPoints = Math.floor(discountInfo.finalPrice * 0.05 * 10);
-    addPoints(earnedPoints);
-    Alert.alert(
-      'Added to Cart!',
-      `${product.name} x${quantity} added to cart!\n` +
-        `Final Price: $${discountInfo.finalPrice.toFixed(2)}\n` +
-        `Points Used: ${discountInfo.pointsUsed}\n` +
-        `Points Earned: ${earnedPoints}`,
-      [{ text: 'Continue Shopping', onPress: () => navigation.navigate('Home') }]
-    );
   };
-
-  const maxPointsUsable = user
-    ? Math.min(user.points, Math.floor(product?.price || 0 * quantity * 5))
-    : 0;
-
+  const maxPointsUsable =
+    user && product
+      ? Math.min(user.points || 0, Math.floor((product.price || 0) * quantity * 5))
+      : 0;
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-slate-50">

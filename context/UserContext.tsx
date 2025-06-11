@@ -129,12 +129,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
   const redeemPoints = async (points: number, reason?: string) => {
-    if (!token || !user || user.points < points) return false;
-
+    const validPoints = Number(points);
+    if (isNaN(validPoints) || validPoints <= 0) {
+      console.error('Invalid points value:', points);
+      return false;
+    }
+    if (!user || (user.points || 0) < validPoints) {
+      console.error('Insufficient points:', user?.points, 'needed:', validPoints);
+      return false;
+    }
     try {
-      const response = await pointsAPI.redeem(token, points, reason);
-      if (response.points !== undefined) {
-        setUser((prev) => (prev ? { ...prev, points: response.points } : null));
+      const response = await pointsAPI.redeem(validPoints, reason);
+      if (response.points !== undefined && !isNaN(response.points)) {
+        setUser((prev) => (prev ? { ...prev, points: Number(response.points) } : null));
         return true;
       }
       return false;
@@ -155,17 +162,38 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
   const calculateDiscount = (price: number, pointsToUse: number) => {
+    const validPrice = Number(price);
+    const validPointsToUse = Number(pointsToUse);
+
+    if (isNaN(validPrice) || isNaN(validPointsToUse) || validPrice <= 0) {
+      console.error('Invalid calculation inputs:', { price, pointsToUse });
+      return {
+        discount: 0,
+        finalPrice: validPrice || 0,
+        pointsUsed: 0,
+      };
+    }
     const pointValue = 0.1;
-    const maxPointsUsable = Math.min(pointsToUse, user?.points || 0);
-    const maxDiscountAllowed = price * 0.5;
+    const userPoints = user?.points || 0;
+    const maxPointsUsable = Math.min(validPointsToUse, userPoints);
+    const maxDiscountAllowed = validPrice * 0.5;
     const potentialDiscount = maxPointsUsable * pointValue;
     const actualDiscount = Math.min(potentialDiscount, maxDiscountAllowed);
-    const finalPrice = Math.max(price - actualDiscount, price * 0.5);
+    const finalPrice = Math.max(validPrice - actualDiscount, validPrice * 0.5);
+    const pointsUsed = Math.ceil(actualDiscount / pointValue);
+    if (isNaN(actualDiscount) || isNaN(finalPrice) || isNaN(pointsUsed)) {
+      console.error('Invalid calculation outputs:', { actualDiscount, finalPrice, pointsUsed });
+      return {
+        discount: 0,
+        finalPrice: validPrice,
+        pointsUsed: 0,
+      };
+    }
 
     return {
       discount: actualDiscount,
       finalPrice: finalPrice,
-      pointsUsed: Math.ceil(actualDiscount / pointValue),
+      pointsUsed: pointsUsed,
     };
   };
   return (
