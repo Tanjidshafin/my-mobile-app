@@ -24,7 +24,13 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>({
+    id: '1',
+    email: 'user@example.com',
+    name: 'John Doe',
+    points: 245,
+    avatar: '/placeholder.svg?height=100&width=100',
+  });
 
   const addPoints = (points: number) => {
     if (user) {

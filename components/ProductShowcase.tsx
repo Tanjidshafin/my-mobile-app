@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { mockProducts } from 'hooks/mockProducts';
 import type { Product } from '../types';
 import { useUser } from 'context/UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 interface ProductShowcaseProps {
   user?: any;
@@ -26,6 +27,7 @@ export default function ProductShowcase() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [animatedValues] = useState(mockProducts.map(() => new Animated.Value(0)));
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const navigation = useNavigation();
   // Animation values
   const filterAnimation = useRef(new Animated.Value(0)).current;
   const dropdownAnimation = useRef(new Animated.Value(0)).current;
@@ -154,7 +156,10 @@ export default function ProductShowcase() {
               </View>
 
               <TouchableOpacity
-                onPress={() => handleProductPress(product, index)}
+                onPress={() => {
+                  navigation.navigate('ProductDetails', { id: product._id });
+                }}
+                // onPress={() => handleProductPress(product, index)}
                 className="rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 shadow-lg">
                 {user ? (
                   <Text className="font-bold text-orange-500">View Details</Text>
