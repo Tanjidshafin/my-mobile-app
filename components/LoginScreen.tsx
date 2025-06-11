@@ -11,6 +11,7 @@ import {
   ScrollView,
   Animated,
   Alert,
+  StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -22,12 +23,14 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [animatedValue] = useState(new Animated.Value(0));
+  const [focusedInput, setFocusedInput] = useState('');
   const navigation = useNavigation();
   const { login } = useUser();
+
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: 1,
-      duration: 1000,
+      duration: 1200,
       useNativeDriver: true,
     }).start();
   }, []);
@@ -57,130 +60,188 @@ export default function LoginScreen() {
 
   const translateY = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [50, 0],
+    outputRange: [30, 0],
+  });
+
+  const scale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.95, 1],
   });
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1">
-      <ScrollView className="flex-1 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500">
-        <Animated.View
-          style={{ opacity, transform: [{ translateY }] }}
-          className="flex-1 px-6 py-12">
-          {/* Header Section */}
-          <View className="mb-8 mt-12 items-center">
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <View className="mb-6 rounded-full bg-white/20 p-6">
-                <Ionicons name="restaurant" size={48} color="#f97316" />
-              </View>
+    <>
+      <StatusBar barStyle="light-content" backgroundColor="#f97316" />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1 bg-orange-50">
+        {/* Custom Header with Back Button */}
+        <View className="rounded-b-[40px] bg-orange-500 px-6 pb-8 pt-12 shadow-lg">
+          <View className="mb-6 flex-row items-center justify-between">
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Home')}
+              className="rounded-full bg-white/20 p-3 backdrop-blur-sm">
+              <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
-
-            <Text className="mb-2 text-3xl font-bold text-orange-500">Welcome Back</Text>
-            <Text className="text-center text-lg text-orange-500/80">
-              Sign in to continue your culinary journey
-            </Text>
+            <View className="rounded-full bg-white/20 p-4">
+              <Ionicons name="restaurant" size={28} color="white" />
+            </View>
+            <View className="w-12" />
           </View>
 
-          {/* Login Form */}
-          <View className="rounded-3xl bg-white/95 p-6 shadow-2xl backdrop-blur-sm">
-            <Text className="mb-8 text-center text-2xl font-bold text-gray-800">Sign In</Text>
+          <View className="items-center">
+            <Text className="mb-2 text-3xl font-bold text-white">Welcome Back!</Text>
+            <Text className="text-center text-base text-orange-100">
+              Ready to discover amazing flavors?
+            </Text>
+          </View>
+        </View>
 
-            {/* Email Input */}
-            <View className="mb-6">
-              <Text className="mb-2 font-semibold text-gray-700">Email Address</Text>
-              <View className="flex-row items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 py-1">
-                <Ionicons name="mail" size={20} color="#9ca3af" />
-                <TextInput
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="Enter your email"
-                  placeholderTextColor="#9ca3af"
-                  className="ml-3 flex-1 text-base text-gray-800"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          <Animated.View
+            style={{
+              opacity,
+              transform: [{ translateY }, { scale }],
+            }}
+            className="px-6 py-8">
+            {/* Main Form Card */}
+            <View className="mb-6 rounded-3xl border border-orange-100 bg-white p-8 shadow-xl">
+              <View className="mb-8 items-center">
+                <View className="mb-4 rounded-full bg-orange-100 p-4">
+                  <Ionicons name="log-in" size={32} color="#f97316" />
+                </View>
+                <Text className="mb-2 text-2xl font-bold text-gray-800">Sign In</Text>
+                <Text className="text-center text-gray-500">
+                  Enter your credentials to continue
+                </Text>
               </View>
-            </View>
 
-            {/* Password Input */}
-            <View className="mb-6">
-              <Text className="mb-2 font-semibold text-gray-700">Password</Text>
-              <View className="flex-row items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 py-1">
-                <Ionicons name="lock-closed" size={20} color="#9ca3af" />
-                <TextInput
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="Enter your password"
-                  placeholderTextColor="#9ca3af"
-                  className="ml-3 flex-1 text-base text-gray-800"
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={20} color="#9ca3af" />
+              {/* Email Input */}
+              <View className="mb-6">
+                <Text className="mb-3 ml-1 font-semibold text-gray-700">Email Address</Text>
+                <View
+                  className={`flex-row items-center rounded-2xl border-2 px-4 py-2 ${
+                    focusedInput === 'email'
+                      ? 'border-orange-400 bg-orange-50'
+                      : 'border-gray-200 bg-gray-50'
+                  }`}>
+                  <View className="mr-3 rounded-full bg-orange-100 p-2">
+                    <Ionicons name="mail" size={18} color="#f97316" />
+                  </View>
+                  <TextInput
+                    value={email}
+                    onChangeText={setEmail}
+                    onFocus={() => setFocusedInput('email')}
+                    onBlur={() => setFocusedInput('')}
+                    placeholder="your.email@example.com"
+                    placeholderTextColor="#9ca3af"
+                    className="flex-1 text-base font-medium text-gray-800"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
+              </View>
+
+              {/* Password Input */}
+              <View className="mb-6">
+                <Text className="mb-3 ml-1 font-semibold text-gray-700">Password</Text>
+                <View
+                  className={`flex-row items-center rounded-2xl border-2 px-4 py-2 ${
+                    focusedInput === 'password'
+                      ? 'border-orange-400 bg-orange-50'
+                      : 'border-gray-200 bg-gray-50'
+                  }`}>
+                  <View className="mr-3 rounded-full bg-orange-100 p-2">
+                    <Ionicons name="lock-closed" size={18} color="#f97316" />
+                  </View>
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    onFocus={() => setFocusedInput('password')}
+                    onBlur={() => setFocusedInput('')}
+                    placeholder="Enter your password"
+                    placeholderTextColor="#9ca3af"
+                    className="flex-1 text-base font-medium text-gray-800"
+                    secureTextEntry={!showPassword}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    className="ml-2 p-2">
+                    <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={20} color="#9ca3af" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Forgot Password */}
+              <TouchableOpacity className="mb-8 self-end">
+                <Text className="text-base font-semibold text-orange-500">Forgot Password?</Text>
+              </TouchableOpacity>
+
+              {/* Login Button */}
+              <TouchableOpacity
+                onPress={handleLogin}
+                disabled={isLoading}
+                className={`mb-6 rounded-2xl py-5 shadow-lg ${isLoading ? 'bg-orange-300' : 'bg-orange-500'}`}>
+                <View className="flex-row items-center justify-center">
+                  {isLoading && (
+                    <View className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  )}
+                  <Text className="text-lg font-bold text-white">
+                    {isLoading ? 'Signing In...' : 'Sign In'}
+                  </Text>
+                  {!isLoading && (
+                    <Ionicons name="arrow-forward" size={20} color="white" className="ml-2" />
+                  )}
+                </View>
+              </TouchableOpacity>
+
+              {/* Divider */}
+              <View className="mb-6 flex-row items-center">
+                <View className="h-px flex-1 bg-gray-300" />
+                <View className="mx-4 rounded-full bg-gray-100 px-4 py-2">
+                  <Text className="text-sm font-medium text-gray-500">OR CONTINUE WITH</Text>
+                </View>
+                <View className="h-px flex-1 bg-gray-300" />
+              </View>
+
+              {/* Social Login */}
+              <View className="space-y-4">
+                <TouchableOpacity className="flex-row mb-3 items-center justify-center rounded-2xl bg-blue-600 py-4 shadow-md">
+                  <View className="mr-3 rounded-full bg-white/20 p-1">
+                    <Ionicons name="logo-facebook" size={20} color="white" />
+                  </View>
+                  <Text className="text-base font-semibold text-white">Continue with Facebook</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity className="flex-row items-center justify-center rounded-2xl bg-red-500 py-4 shadow-md">
+                  <View className="mr-3 rounded-full bg-white/20 p-1">
+                    <Ionicons name="logo-google" size={20} color="white" />
+                  </View>
+                  <Text className="text-base font-semibold text-white">Continue with Google</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            {/* Forgot Password */}
-            <TouchableOpacity className="mb-6 self-end">
-              <Text className="font-semibold text-orange-500">Forgot Password?</Text>
-            </TouchableOpacity>
-
-            {/* Login Button */}
-            <TouchableOpacity
-              onPress={handleLogin}
-              disabled={isLoading}
-              className={`rounded-2xl border border-orange-500 bg-orange-500 py-4 shadow-lg ${
-                isLoading ? 'opacity-70' : ''
-              }`}>
+            {/* Sign Up Link Card */}
+            <View className="rounded-2xl border border-orange-100 bg-white p-6 shadow-lg">
               <View className="flex-row items-center justify-center">
-                {isLoading && (
-                  <View className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                )}
-                <Text className="text-lg font-bold text-white">
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                </Text>
+                <Text className="mr-2 text-base text-gray-600">New to FoodieHub?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                  <Text className="text-base font-bold text-orange-500">Create Account</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-
-            {/* Divider */}
-            <View className="my-8 flex-row items-center">
-              <View className="h-px flex-1 bg-gray-300" />
-              <Text className="mx-4 font-medium text-gray-500">OR</Text>
-              <View className="h-px flex-1 bg-gray-300" />
             </View>
 
-            {/* Social Login */}
-            <View className="space-y-3">
-              <TouchableOpacity className="mb-3 flex-row items-center justify-center rounded-2xl bg-blue-600 py-4">
-                <Ionicons name="logo-facebook" size={20} color="white" />
-                <Text className="ml-3 font-semibold text-white">Continue with Facebook</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity className="flex-row items-center justify-center rounded-2xl bg-red-500 py-4">
-                <Ionicons name="logo-google" size={20} color="white" />
-                <Text className="ml-3 font-semibold text-white">Continue with Google</Text>
-              </TouchableOpacity>
+            {/* Bottom Info */}
+            <View className="mt-8 items-center px-4">
+              <Text className="text-center text-sm leading-5 text-gray-400">
+                By signing in, you agree to our{' '}
+                <Text className="font-medium text-orange-500">Terms of Service</Text> and{' '}
+                <Text className="font-medium text-orange-500">Privacy Policy</Text>
+              </Text>
             </View>
-
-            {/* Sign Up Link */}
-            <View className="mt-8 flex-row justify-center">
-              <Text className="text-gray-600">Don't have an account? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                <Text className="font-bold text-orange-500">Sign Up</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Bottom Decoration */}
-          <View className="mt-8 items-center">
-            <Text className="text-sm text-white/60">
-              By signing in, you agree to our Terms & Privacy Policy
-            </Text>
-          </View>
-        </Animated.View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </Animated.View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </>
   );
 }

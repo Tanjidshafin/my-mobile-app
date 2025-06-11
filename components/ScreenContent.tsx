@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
 import ProductDetails from './ProductDetails';
+import { useUser } from 'context/UserContext';
 
 type ScreenContentProps = {
   path?: string;
@@ -26,14 +27,19 @@ const MainContent = ({ children }: { children?: React.ReactNode }) => (
 );
 
 export const ScreenContent = ({ path, children }: ScreenContentProps) => {
+  const { user } = useUser();
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" options={{ headerShown: false }}>
           {() => <MainContent>{children}</MainContent>}
         </Stack.Screen>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+        {!user && (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+          </>
+        )}
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}

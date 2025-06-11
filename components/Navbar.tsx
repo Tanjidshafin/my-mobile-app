@@ -67,7 +67,7 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               </TouchableOpacity>
               {/* Logout */}
               <TouchableOpacity onPress={() => logout()} className="rounded-full bg-white/20 p-1">
-                <Ionicons name="log-out-outline" size={16} color="#EF4444" />
+                <Ionicons name="log-out-outline" size={24} color="#EF4444" />
               </TouchableOpacity>
             </View>
           ) : (
