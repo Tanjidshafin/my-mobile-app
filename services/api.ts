@@ -76,7 +76,7 @@ export const productsAPI = {
     try {
       const params = category ? { category } : {};
       const response = await api.get('/products', { params });
-      return response.data;
+      return response.data.products;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
@@ -87,7 +87,7 @@ export const productsAPI = {
   getById: async (id: string) => {
     try {
       const response = await api.get(`/products/${id}`);
-      return response.data;
+      return response.data.product;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;

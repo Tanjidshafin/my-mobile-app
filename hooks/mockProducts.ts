@@ -2,7 +2,6 @@ import { Product } from 'types';
 
 export const mockProducts: Product[] = [
   {
-    _id: '1',
     name: 'Truffle Pasta Delight',
     description: 'Creamy pasta with black truffle, parmesan, and fresh herbs',
     price: 28.99,
@@ -15,7 +14,6 @@ export const mockProducts: Product[] = [
     isSpicy: false,
   },
   {
-    _id: '2',
     name: 'Spicy Dragon Roll',
     description: 'Fresh salmon, avocado, cucumber with spicy mayo and eel sauce',
     price: 16.99,
@@ -28,7 +26,6 @@ export const mockProducts: Product[] = [
     isSpicy: true,
   },
   {
-    _id: '3',
     name: 'Wagyu Beef Burger',
     description: 'Premium wagyu beef with caramelized onions and truffle aioli',
     price: 34.99,
@@ -42,7 +39,6 @@ export const mockProducts: Product[] = [
     isSpicy: false,
   },
   {
-    _id: '4',
     name: 'Mediterranean Quinoa Bowl',
     description: 'Healthy quinoa with roasted vegetables, feta, and tahini dressing',
     price: 18.99,
@@ -55,7 +51,6 @@ export const mockProducts: Product[] = [
     isSpicy: false,
   },
   {
-    _id: '5',
     name: 'Chocolate Lava Cake',
     description: 'Warm chocolate cake with molten center, served with vanilla ice cream',
     price: 12.99,
@@ -69,7 +64,6 @@ export const mockProducts: Product[] = [
     isSpicy: false,
   },
   {
-    _id: '6',
     name: 'Thai Green Curry',
     description: 'Authentic Thai green curry with coconut milk and fresh basil',
     price: 22.99,

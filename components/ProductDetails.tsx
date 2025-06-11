@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { mockProducts } from 'hooks/mockProducts';
+import { productsAPI } from 'services/api';
 import { useUser } from '../context/UserContext';
 import type { Product } from '../types';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -11,6 +11,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 export default function ProductDetails() {
   const { user, redeemPoints, calculateDiscount, addPoints } = useUser();
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [pointsToUse, setPointsToUse] = useState(0);
   const [showPointsModal, setShowPointsModal] = useState(false);
@@ -21,10 +22,28 @@ export default function ProductDetails() {
   const route = useRoute();
   const { id } = route.params;
   const navigation = useNavigation();
-  useEffect(() => {
-    const foundProduct = mockProducts.find((p) => p._id === id);
-    setProduct(foundProduct || null);
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await productsAPI.getById(id);
+        if (response && !response.message) {
+          setProduct(response);
+        } else {
+          console.error('Product not found:', response?.message);
+          setProduct(null);
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) {
+      fetchProduct();
+    }
     Animated.timing(animatedValue, {
       toValue: 1,
       duration: 1000,
@@ -50,7 +69,6 @@ export default function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!product || !user) return;
-
     const basePrice = product.price * quantity;
     const discountInfo = calculateDiscount(basePrice, pointsToUse);
     if (pointsToUse > 0) {
@@ -76,6 +94,20 @@ export default function ProductDetails() {
   const maxPointsUsable = user
     ? Math.min(user.points, Math.floor(product?.price || 0 * quantity * 5))
     : 0;
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-slate-50">
+        <View className="items-center justify-center rounded-3xl bg-white p-12 shadow-2xl">
+          <View className="mb-6 h-24 w-24 items-center justify-center rounded-full bg-orange-100">
+            <Ionicons name="restaurant" size={48} color="#f97316" />
+          </View>
+          <Text className="text-xl font-bold text-slate-700">Loading product details...</Text>
+          <Text className="mt-2 text-slate-500">Please wait while we fetch the information</Text>
+        </View>
+      </View>
+    );
+  }
 
   if (!product) {
     return (
@@ -233,7 +265,7 @@ export default function ProductDetails() {
             </View>
 
             <View className="flex-row flex-wrap">
-              {product.ingredients.map((ingredient, index) => (
+              {product.ingredients?.map((ingredient, index) => (
                 <View
                   key={index}
                   className="mb-3 mr-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2">

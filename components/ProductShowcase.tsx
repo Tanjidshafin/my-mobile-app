@@ -13,7 +13,7 @@ import {
   Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { mockProducts } from 'hooks/mockProducts';
+import { productsAPI } from 'services/api';
 import type { Product } from '../types';
 import { useUser } from 'context/UserContext';
 import { useNavigation } from '@react-navigation/native';
@@ -25,35 +25,62 @@ interface ProductShowcaseProps {
 export default function ProductShowcase() {
   const { user } = useUser();
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [animatedValues] = useState(mockProducts.map(() => new Animated.Value(0)));
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [animatedValues, setAnimatedValues] = useState<Animated.Value[]>([]);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const navigation = useNavigation();
+
   // Animation values
   const filterAnimation = useRef(new Animated.Value(0)).current;
   const dropdownAnimation = useRef(new Animated.Value(0)).current;
   const categories = ['All', 'Main Course', 'Sushi', 'Burgers', 'Healthy', 'Desserts', 'Asian'];
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productsAPI.getAll();
+        if (response && Array.isArray(response)) {
+          setProducts(response);
+          setAnimatedValues(response.map(() => new Animated.Value(0)));
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const filteredProducts =
     selectedCategory === 'All'
-      ? mockProducts
-      : mockProducts.filter((product) => product.category === selectedCategory);
+      ? products
+      : products.filter((product) => product.category === selectedCategory);
+
   useEffect(() => {
-    Animated.stagger(
-      100,
-      filteredProducts.map((_, index) =>
-        Animated.spring(animatedValues[index], {
-          toValue: 1,
-          friction: 6,
-          tension: 40,
-          useNativeDriver: true,
-        })
-      )
-    ).start();
-    mockProducts.forEach((product, index) => {
-      if (!filteredProducts.some((p) => p.id === product.id)) {
-        animatedValues[index].setValue(0);
-      }
-    });
-  }, [filteredProducts]);
+    if (animatedValues.length > 0) {
+      Animated.stagger(
+        100,
+        filteredProducts.map((_, index) =>
+          Animated.spring(animatedValues[index], {
+            toValue: 1,
+            friction: 6,
+            tension: 40,
+            useNativeDriver: true,
+          })
+        )
+      ).start();
+
+      products.forEach((product, index) => {
+        if (!filteredProducts.some((p) => p.id === product.id)) {
+          animatedValues[index]?.setValue(0);
+        }
+      });
+    }
+  }, [filteredProducts, animatedValues]);
 
   useEffect(() => {
     Animated.timing(dropdownAnimation, {
@@ -63,10 +90,11 @@ export default function ProductShowcase() {
       useNativeDriver: true,
     }).start();
   }, [showCategoryDropdown]);
+
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setShowCategoryDropdown(false);
-    animatedValues.forEach((value) => value.setValue(0));
+    animatedValues.forEach((value) => value?.setValue(0));
     Animated.timing(filterAnimation, {
       toValue: 1,
       duration: 300,
@@ -75,8 +103,12 @@ export default function ProductShowcase() {
       filterAnimation.setValue(0);
     });
   };
+
   const ProductCard = ({ product, index }: { product: Product; index: number }) => {
-    const translateY = animatedValues[index].interpolate({
+    const animatedValue = animatedValues[index];
+    if (!animatedValue) return null;
+
+    const translateY = animatedValue.interpolate({
       inputRange: [0, 1],
       outputRange: [50, 0],
     });
@@ -140,7 +172,6 @@ export default function ProductShowcase() {
                 onPress={() => {
                   navigation.navigate('ProductDetails', { id: product._id });
                 }}
-                // onPress={() => handleProductPress(product, index)}
                 className="rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 shadow-lg">
                 {user ? (
                   <Text className="font-bold text-orange-500">View Details</Text>
@@ -156,10 +187,25 @@ export default function ProductShowcase() {
       </Animated.View>
     );
   };
+
   const dropdownIconRotation = dropdownAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
   });
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-50">
+        <View className="items-center justify-center rounded-3xl bg-white p-12 shadow-2xl">
+          <View className="mb-6 h-24 w-24 items-center justify-center rounded-full bg-orange-100">
+            <Ionicons name="restaurant" size={48} color="#f97316" />
+          </View>
+          <Text className="text-xl font-bold text-gray-700">Loading delicious dishes...</Text>
+          <Text className="mt-2 text-gray-500">Please wait while we fetch our menu</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-gray-50">
