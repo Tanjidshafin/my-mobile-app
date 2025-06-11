@@ -5,6 +5,7 @@ import Footer from './Footer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './LoginScreen';
+import SignupScreen from './SignupScreen';
 
 type ScreenContentProps = {
   path?: string;
@@ -31,6 +32,7 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
           {() => <MainContent>{children}</MainContent>}
         </Stack.Screen>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

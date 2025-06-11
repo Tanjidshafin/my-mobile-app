@@ -62,22 +62,23 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               </View>
 
               {/* Profile */}
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Login')}
-                className="rounded-full bg-white/20 p-2">
+              <TouchableOpacity className="rounded-full bg-white/20 p-2">
                 <Ionicons name="person" size={20} color="#fbbf24" />
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
-              // onPress={() => router.push('/login')}
+              onPress={() => navigation.navigate('Login')}
               className="rounded-full bg-gray-100 px-4 py-2 shadow-md">
               <Text className="font-semibold text-orange-500">Login</Text>
             </TouchableOpacity>
           )}
 
           {/* Menu Button */}
-          <TouchableOpacity onPress={onMenuPress} className="rounded-full bg-white/20 p-2">
+          <TouchableOpacity
+            //  onPress={onMenuPress}
+            onPress={() => navigation.navigate('Signup')}
+            className="rounded-full bg-white/20 p-2">
             <Ionicons name="menu" size={24} color="#fbbf24" />
           </TouchableOpacity>
         </View>
