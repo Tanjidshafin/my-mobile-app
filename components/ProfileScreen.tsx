@@ -201,7 +201,7 @@ export default function ProfileScreen() {
                       <TextInput
                         value={editForm.name}
                         onChangeText={(text) => setEditForm({ ...editForm, name: text })}
-                        className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3"
+                        className="rounded-xl border border-gray-200 bg-gray-50 px-2 py-1"
                         placeholder="Enter your name"
                       />
                     </View>
@@ -212,11 +212,11 @@ export default function ProfileScreen() {
                       <TextInput
                         value={editForm.avatar}
                         onChangeText={(text) => setEditForm({ ...editForm, avatar: text })}
-                        className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3"
+                        className="rounded-xl border border-gray-200 bg-gray-50 px-2 py-1"
                         placeholder="Enter avatar URL"
                       />
                     </View>
-                    <View className="flex-row space-x-3">
+                    <View className="mt-1 flex-row gap-1 space-x-3">
                       <TouchableOpacity
                         onPress={() => setIsEditing(false)}
                         className="flex-1 rounded-xl bg-gray-200 py-3">
