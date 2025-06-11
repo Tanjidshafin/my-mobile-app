@@ -63,27 +63,6 @@ export default function ProductShowcase() {
       useNativeDriver: true,
     }).start();
   }, [showCategoryDropdown]);
-
-  const handleProductPress = (product: Product, index: number) => {
-    if (!user) {
-      //   router.push('/login');
-      return;
-    }
-    Animated.sequence([
-      Animated.timing(animatedValues[index], {
-        toValue: 0.9,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.spring(animatedValues[index], {
-        toValue: 1,
-        friction: 3,
-        tension: 40,
-        useNativeDriver: true,
-      }),
-    ]).start();
-    // router.push(`/product/${product.id}`);
-  };
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setShowCategoryDropdown(false);
@@ -110,7 +89,9 @@ export default function ProductShowcase() {
         }}>
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => handleProductPress(product, index)}
+          onPress={() => {
+            navigation.navigate('ProductDetails', { id: product._id });
+          }}
           className="overflow-hidden rounded-3xl bg-white shadow-xl">
           <View className="relative">
             <Image source={{ uri: product.image }} className="h-56 w-full object-cover" />
@@ -241,7 +222,7 @@ export default function ProductShowcase() {
       <ScrollView className="flex-1 px-4 py-6">
         <View>
           {filteredProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
+            <ProductCard key={product._id} product={product} index={index} />
           ))}
         </View>
         {filteredProducts.length === 0 && (

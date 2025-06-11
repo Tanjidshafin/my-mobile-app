@@ -10,9 +10,11 @@ import {
   Platform,
   ScrollView,
   Animated,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useUser } from 'context/UserContext';
 
 export default function SignupScreen() {
   const [formData, setFormData] = useState({
@@ -26,6 +28,7 @@ export default function SignupScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [animatedValue] = useState(new Animated.Value(0));
   const navigation = useNavigation();
+  const { register } = useUser();
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: 1,
@@ -36,12 +39,26 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     setIsLoading(true);
-    // Simulate Firebase authentication
-    setTimeout(() => {
+    const { name, email, password, confirmPassword } = formData;
+    if (!name || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
       setIsLoading(false);
-      // Navigate to home after successful signup
-      //   router.push('/');
-    }, 2000);
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+    const result = await register(name, email, password);
+    if (result.success) {
+      Alert.alert('Success', 'Account created successfully!', [
+        { text: 'OK', onPress: () => navigation.navigate('Home') },
+      ]);
+    } else {
+      Alert.alert('Error', result.message);
+    }
+    setIsLoading(false);
   };
 
   const updateFormData = (field: string, value: string) => {
@@ -198,9 +215,7 @@ export default function SignupScreen() {
             {/* Login Link */}
             <View className="mt-6 flex-row justify-center">
               <Text className="text-gray-600">Already have an account? </Text>
-              <TouchableOpacity
-              //    onPress={() => router.push('/login')}
-              >
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <Text className="font-bold text-purple-500">Sign In</Text>
               </TouchableOpacity>
             </View>
@@ -212,8 +227,8 @@ export default function SignupScreen() {
               <Ionicons name="gift" size={24} color="white" />
             </View>
             <View className="flex-1">
-              <Text className="text-lg font-bold black">Welcome Bonus!</Text>
-              <Text className="text-sm black/80">Get 100 points when you sign up</Text>
+              <Text className="black text-lg font-bold">Welcome Bonus!</Text>
+              <Text className="black/80 text-sm">Get 100 points when you sign up</Text>
             </View>
           </View>
         </Animated.View>

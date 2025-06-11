@@ -10,9 +10,11 @@ import {
   Platform,
   ScrollView,
   Animated,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useUser } from 'context/UserContext';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -21,6 +23,7 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [animatedValue] = useState(new Animated.Value(0));
   const navigation = useNavigation();
+  const { login } = useUser();
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: 1,
@@ -31,12 +34,20 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     setIsLoading(true);
-    // Simulate Firebase authentication
-    setTimeout(() => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
       setIsLoading(false);
-      // Navigate to home after successful login
-      //   router.push('/');
-    }, 2000);
+      return;
+    }
+    const result = await login(email, password);
+    if (result.success) {
+      Alert.alert('Success', 'Login successful!', [
+        { text: 'OK', onPress: () => navigation.navigate('Home') },
+      ]);
+    } else {
+      Alert.alert('Error', result.message);
+    }
+    setIsLoading(false);
   };
 
   const opacity = animatedValue.interpolate({
@@ -156,9 +167,7 @@ export default function LoginScreen() {
             {/* Sign Up Link */}
             <View className="mt-8 flex-row justify-center">
               <Text className="text-gray-600">Don't have an account? </Text>
-              <TouchableOpacity
-              //   onPress={() => router.push('/signup')}
-              >
+              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <Text className="font-bold text-orange-500">Sign Up</Text>
               </TouchableOpacity>
             </View>
