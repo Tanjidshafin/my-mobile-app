@@ -32,7 +32,6 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        {/* Always available routes */}
         <Stack.Screen name="Home" options={{ headerShown: false }}>
           {() => <MainContent>{children}</MainContent>}
         </Stack.Screen>

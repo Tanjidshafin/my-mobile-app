@@ -103,7 +103,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const updateProfile = async (data: { name?: string; avatar?: string }) => {
     if (!token) return false;
     try {
-      const response = await authAPI.updateProfile(token, data);
+      const response = await authAPI.updateProfile(data);
       if (response.user) {
         setUser(response.user);
         return true;
