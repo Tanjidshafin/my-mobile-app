@@ -19,10 +19,10 @@ const Stack = createNativeStackNavigator();
 
 // Main content component with navbar and footer
 const MainContent = ({ children }: { children?: React.ReactNode }) => (
-  <ScrollView>
-    <View className={styles.separator} />
+  <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <View style={{ height: 1 }} />
     <Navbar />
-    <View className="flex-1">{children || <Home />}</View>
+    <View style={{ flex: 1 }}>{children || <Home />}</View>
     <Footer />
   </ScrollView>
 );
@@ -48,10 +48,4 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
-
-const styles = {
-  container: ``,
-  separator: ``,
-  title: ``,
 };

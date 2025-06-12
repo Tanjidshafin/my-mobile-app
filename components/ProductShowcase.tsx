@@ -413,7 +413,7 @@ export default function ProductShowcase() {
         </Modal>
 
         {/* Products List */}
-        <ScrollView className="flex-1 px-6 py-6" showsVerticalScrollIndicator={false}>
+        <ScrollView className="flex-1 px-3 py-6" showsVerticalScrollIndicator={false}>
           <View>
             {filteredProducts.map((product, index) => (
               <ProductCard key={product._id} product={product} index={index} />
