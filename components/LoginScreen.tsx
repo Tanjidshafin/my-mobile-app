@@ -16,7 +16,14 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from 'context/UserContext';
-
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+type RootStackParamList = {
+  Home: undefined;
+  Profile: undefined;
+  Login: undefined;
+  Signup: undefined;
+  ProductDetails: { id: string };
+};
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +31,7 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [animatedValue] = useState(new Animated.Value(0));
   const [focusedInput, setFocusedInput] = useState('');
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { login } = useUser();
 
   React.useEffect(() => {
@@ -205,7 +212,7 @@ export default function LoginScreen() {
 
               {/* Social Login */}
               <View className="space-y-4">
-                <TouchableOpacity className="flex-row mb-3 items-center justify-center rounded-2xl bg-blue-600 py-4 shadow-md">
+                <TouchableOpacity className="mb-3 flex-row items-center justify-center rounded-2xl bg-blue-600 py-4 shadow-md">
                   <View className="mr-3 rounded-full bg-white/20 p-1">
                     <Ionicons name="logo-facebook" size={20} color="white" />
                   </View>

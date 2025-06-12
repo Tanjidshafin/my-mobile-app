@@ -18,11 +18,18 @@ import { productsAPI } from 'services/api';
 import type { Product } from '../types';
 import { useUser } from 'context/UserContext';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface ProductShowcaseProps {
   user?: any;
 }
-
+type RootStackParamList = {
+  Home: undefined;
+  Profile: undefined;
+  Login: undefined;
+  Signup: undefined;
+  ProductDetails: { id: string };
+};
 export default function ProductShowcase() {
   const { user } = useUser();
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -30,7 +37,7 @@ export default function ProductShowcase() {
   const [loading, setLoading] = useState(true);
   const [animatedValues, setAnimatedValues] = useState<Animated.Value[]>([]);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // Animation values
   const filterAnimation = useRef(new Animated.Value(0)).current;
@@ -85,9 +92,8 @@ export default function ProductShowcase() {
           })
         )
       ).start();
-
       products.forEach((product, index) => {
-        if (!filteredProducts.some((p) => p.id === product.id)) {
+        if (!filteredProducts.some((p) => p._id === product._id)) {
           animatedValues[index]?.setValue(0);
         }
       });

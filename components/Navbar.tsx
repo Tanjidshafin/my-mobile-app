@@ -5,14 +5,19 @@ import { View, Text, TouchableOpacity, Animated, TextInput } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from 'context/UserContext';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface NavbarProps {
   onMenuPress?: () => void;
 }
-
+type RootStackParamList = {
+  Home: undefined;
+  Profile: undefined;
+  Login: undefined;
+};
 export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
   const [animatedValue] = useState(new Animated.Value(0));
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { user, logout } = useUser();
   const handleLogoPress = () => {
     Animated.sequence([
@@ -64,7 +69,7 @@ export default function EnhancedNavbar({ onMenuPress }: NavbarProps) {
               {/* Profile */}
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('Profile')
+                  navigation.navigate('Profile');
                 }}
                 className="rounded-full bg-white/20 p-2">
                 <Ionicons name="person" size={20} color="#fbbf24" />

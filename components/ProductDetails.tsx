@@ -6,8 +6,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { productsAPI } from 'services/api';
 import { useUser } from '../context/UserContext';
 import type { Product } from '../types';
-import { useNavigation, useRoute } from '@react-navigation/native';
-
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+type RootStackParamList = {
+  Home: undefined;
+  Profile: undefined;
+  Login: undefined;
+  Signup: undefined;
+  ProductDetails: { id: string };
+};
 export default function ProductDetails() {
   const { user, redeemPoints, calculateDiscount, addPoints } = useUser();
   const [product, setProduct] = useState<Product | null>(null);
@@ -19,10 +26,9 @@ export default function ProductDetails() {
   const [heartAnimated] = useState(new Animated.Value(1));
   const [isLiked, setIsLiked] = useState(false);
   const [scrollY] = useState(new Animated.Value(0));
-  const route = useRoute();
+  const route = useRoute<RouteProp<RootStackParamList, 'ProductDetails'>>();
   const { id } = route.params;
-  const navigation = useNavigation();
-
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     const fetchProduct = async () => {
       try {
