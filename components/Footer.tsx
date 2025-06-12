@@ -49,19 +49,19 @@ export default function EnhancedFooter() {
         <View className="bg-gray-800/50 rounded-2xl p-6 my-5 border border-gray-700/50">
           <Text className="text-center text-xl font-bold text-white mb-5">Contact Us</Text>
           <View className="space-y-4 flex-col gap-2">
-            <View className="flex-row items-center justify-center space-x-3 bg-gray-700/30 rounded-xl p-3">
+            <View className="flex-row items-center justify-center space-x-3 bg-gray-700/30 rounded-xl p-3 gap-2">
               <View className="bg-orange-500 rounded-full p-2">
                 <Ionicons name="location" size={16} color="white" />
               </View>
               <Text className="text-gray-200 font-medium">123 Food Street, Culinary City</Text>
             </View>
-            <View className="flex-row items-center justify-center space-x-3 bg-gray-700/30 rounded-xl p-3">
+            <View className="flex-row items-center justify-center space-x-3 bg-gray-700/30 rounded-xl p-3 gap-2">
               <View className="bg-orange-500 rounded-full p-2">
                 <Ionicons name="call" size={16} color="white" />
               </View>
               <Text className="text-gray-200 font-medium">+1 (555) 123-4567</Text>
             </View>
-            <View className="flex-row items-center justify-center space-x-3 bg-gray-700/30 rounded-xl p-3">
+            <View className="flex-row items-center justify-center space-x-3 bg-gray-700/30 rounded-xl p-3 gap-2">
               <View className="bg-orange-500 rounded-full p-2">
                 <Ionicons name="mail" size={16} color="white" />
               </View>
@@ -70,7 +70,6 @@ export default function EnhancedFooter() {
           </View>
         </View>
 
-        {/* Social Media - Enhanced */}
         <View className="items-center space-y-4">
           <Text className="text-xl font-bold mb-5 text-white">Follow Us</Text>
           <View className="flex-row justify-center gap-4">

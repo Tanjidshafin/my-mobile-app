@@ -85,7 +85,6 @@ export default function EnhancedProfileScreen() {
         name: editForm.name.trim(),
         avatar: editForm.avatar.trim(),
       });
-
       if (success) {
         setIsEditing(false);
         Alert.alert('Success', 'Profile updated successfully!');
@@ -299,7 +298,7 @@ export default function EnhancedProfileScreen() {
                   <Text className="mt-4 font-medium text-gray-500">Loading history...</Text>
                 </View>
               ) : pointsHistory.length > 0 ? (
-                <View className="space-y-4">
+                <View className="space-y-4 flex-col gap-2">
                   {pointsHistory.slice(0, 5).map((transaction) => (
                     <View
                       key={transaction._id}
