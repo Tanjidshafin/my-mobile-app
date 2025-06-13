@@ -127,7 +127,6 @@ export default function ProductDetails() {
             <Ionicons name="restaurant" size={48} color="#f97316" />
           </View>
           <Text className="text-xl font-bold text-slate-700">Loading product details...</Text>
-          <Text className="mt-2 text-slate-500">Please wait while we fetch the information</Text>
         </View>
       </View>
     );

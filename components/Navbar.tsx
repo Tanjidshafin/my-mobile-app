@@ -77,10 +77,8 @@ export default function EnhancedNavbar() {
     try {
       const response = await productsAPI.getAll();
       if (response) {
-        const filtered = response.filter(
-          (product: Product) =>
-            product.name.toLowerCase().startsWith(query.toLowerCase()) ||
-            product.name.toLowerCase().includes(query.toLowerCase())
+        const filtered = response.filter((product: Product) =>
+          product.name.toLowerCase().startsWith(query.toLowerCase())
         );
         setSearchResults(filtered);
       }
@@ -219,12 +217,13 @@ export default function EnhancedNavbar() {
             {searchResults.length > 0 ? (
               <View className="p-4">
                 <Text className="mb-3 text-sm font-medium text-gray-500">
-                  Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "
-                  {searchQuery}"
+                  Showing top {searchResults.length >= 3 ? '3' : searchResults.length} of{' '}
+                  {searchResults.length} result
+                  {searchResults.length !== 1 ? 's' : ''} for "{searchQuery}"
                 </Text>
 
                 <ScrollView>
-                  {searchResults.map((product) => (
+                  {searchResults.slice(0, 3).map((product) => (
                     <TouchableOpacity
                       key={product._id}
                       onPress={() => handleProductPress(product)}
