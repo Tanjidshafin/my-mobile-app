@@ -1,7 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, ScrollView, Image, Animated } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Image,
+  Animated,
+  Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../context/UserContext';
@@ -51,7 +60,18 @@ export default function EnhancedNavbar() {
       }).start();
     }
   }, [searchQuery]);
-
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: () => {
+          logout();
+        },
+      },
+    ]);
+  };
   const searchProducts = async (query: string) => {
     setIsSearching(true);
     try {
@@ -59,12 +79,8 @@ export default function EnhancedNavbar() {
       if (response) {
         const filtered = response.filter(
           (product: Product) =>
-            product.name.toLowerCase().includes(query.toLowerCase()) ||
-            product.description.toLowerCase().includes(query.toLowerCase()) ||
-            product.category.toLowerCase().includes(query.toLowerCase()) ||
-            product.ingredients.some((ingredient) =>
-              ingredient.toLowerCase().includes(query.toLowerCase())
-            )
+            product.name.toLowerCase().startsWith(query.toLowerCase()) ||
+            product.name.toLowerCase().includes(query.toLowerCase())
         );
         setSearchResults(filtered);
       }
@@ -122,8 +138,8 @@ export default function EnhancedNavbar() {
   });
 
   return (
-    <View className="relative">
-      <View className="border-b border-gray-100 bg-white px-4 py-3 pt-12 shadow-lg">
+    <View className="relative z-50">
+      <View className="border-b border-gray-100 bg-white px-2 py-3 pt-14 shadow-lg">
         <View className="mb-4 flex-row items-center justify-between">
           <TouchableOpacity onPress={handleLogoPress} className="flex-row items-center">
             <Animated.View style={{ transform: [{ scale: logoScale }] }}>
@@ -138,7 +154,7 @@ export default function EnhancedNavbar() {
           </TouchableOpacity>
           <View className="flex-row items-center space-x-3">
             {user ? (
-              <View className="flex-row items-center gap-2 space-x-3">
+              <View className="flex-row items-center gap-1 space-x-3">
                 <View className="flex-row items-center rounded-full border border-orange-200 bg-orange-50 px-4 py-2">
                   <View className="mr-2 rounded-full bg-orange-500 p-1">
                     <Ionicons name="star" size={14} color="white" />
@@ -150,8 +166,8 @@ export default function EnhancedNavbar() {
                   className="rounded-full border border-gray-200 bg-gray-100 p-3">
                   <Ionicons name="person" size={20} color="#f97316" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => logout()} className="rounded-full bg-red-100 p-3">
-                  <Ionicons name="log-out-outline" size={20} color="#dc2626" />{' '}
+                <TouchableOpacity onPress={handleLogout} className="rounded-full bg-red-100 p-3">
+                  <Ionicons name="log-out-outline" size={20} color="#dc2626" />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -198,8 +214,8 @@ export default function EnhancedNavbar() {
             opacity: searchOpacity,
             transform: [{ translateY: searchTranslateY }],
           }}
-          className="absolute left-0 right-0 top-full z-50 max-h-96 border-t border-gray-100 bg-white shadow-2xl">
-          <ScrollView className="max-h-96" showsVerticalScrollIndicator={false}>
+          className="absolute left-0 right-0 top-full z-50 max-h-[26rem] overflow-y-auto border-t border-gray-100 bg-white shadow-2xl">
+          <ScrollView className="max-h-[26rem] overflow-y-auto">
             {searchResults.length > 0 ? (
               <View className="p-4">
                 <Text className="mb-3 text-sm font-medium text-gray-500">
@@ -207,66 +223,70 @@ export default function EnhancedNavbar() {
                   {searchQuery}"
                 </Text>
 
-                {searchResults.map((product) => (
-                  <TouchableOpacity
-                    key={product._id}
-                    onPress={() => handleProductPress(product)}
-                    className="mb-2 flex-row items-center rounded-xl border border-gray-100 bg-gray-50 px-2 py-3">
-                    {/* Product Image */}
-                    <View className="relative">
-                      <Image
-                        source={{ uri: product.image }}
-                        className="h-16 w-16 rounded-xl bg-gray-200"
-                      />
-                      {product.isVegetarian && (
-                        <View className="absolute -right-1 -top-1 rounded-full bg-green-500 p-1">
-                          <Text className="text-xs text-white">🌱</Text>
-                        </View>
-                      )}
-                    </View>
-                    <View className="ml-4 flex-1">
-                      <Text className="text-base font-bold text-gray-800" numberOfLines={1}>
-                        {product.name}
-                      </Text>
-                      <Text className="mt-1 text-sm text-gray-500" numberOfLines={1}>
-                        {product.description}
-                      </Text>
+                <ScrollView>
+                  {searchResults.map((product) => (
+                    <TouchableOpacity
+                      key={product._id}
+                      onPress={() => handleProductPress(product)}
+                      className="mb-2 flex-row items-center rounded-xl border border-gray-100 bg-gray-50 px-2 py-3">
+                      {/* Product Image */}
+                      <View className="relative">
+                        <Image
+                          source={{ uri: product.image }}
+                          className="h-16 w-16 rounded-xl bg-gray-200"
+                        />
+                        {product.isVegetarian && (
+                          <View className="absolute -right-1 -top-1 rounded-full bg-green-500 p-1">
+                            <Text className="text-xs text-white">🌱</Text>
+                          </View>
+                        )}
+                      </View>
+                      <View className="ml-4 flex-1">
+                        <Text className="text-base font-bold text-gray-800" numberOfLines={1}>
+                          {product.name}
+                        </Text>
+                        <Text className="mt-1 text-sm text-gray-500" numberOfLines={1}>
+                          {product.description}
+                        </Text>
 
-                      <View className="mt-2 flex-row items-center">
-                        <View className="mr-2 rounded-full bg-orange-100 px-2 py-1">
-                          <Text className="text-xs font-semibold text-orange-600">
-                            {product.category}
-                          </Text>
-                        </View>
+                        <View className="mt-2 flex-row items-center">
+                          <View className="mr-2 rounded-full bg-orange-100 px-2 py-1">
+                            <Text className="text-xs font-semibold text-orange-600">
+                              {product.category}
+                            </Text>
+                          </View>
 
-                        <View className="flex-row items-center">
-                          <Ionicons name="star" size={12} color="#fbbf24" />
-                          <Text className="ml-1 text-xs text-gray-600">{product.rating}</Text>
-                        </View>
+                          <View className="flex-row items-center">
+                            <Ionicons name="star" size={12} color="#fbbf24" />
+                            <Text className="ml-1 text-xs text-gray-600">{product.rating}</Text>
+                          </View>
 
-                        <View className="ml-3 flex-row items-center">
-                          <Ionicons name="time" size={12} color="#6b7280" />
-                          <Text className="ml-1 text-xs text-gray-600">{product.cookingTime}</Text>
+                          <View className="ml-3 flex-row items-center">
+                            <Ionicons name="time" size={12} color="#6b7280" />
+                            <Text className="ml-1 text-xs text-gray-600">
+                              {product.cookingTime}
+                            </Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
 
-                    {/* Price */}
-                    <View className="items-end">
-                      <Text className="text-lg font-bold text-orange-500">${product.price}</Text>
-                      {product.isSpicy && (
-                        <View className="mt-1 rounded-full bg-red-100 px-2 py-1">
-                          <Text className="text-xs text-red-600">Spicy</Text>
-                        </View>
-                      )}
-                    </View>
+                      {/* Price */}
+                      <View className="items-end">
+                        <Text className="text-lg font-bold text-orange-500">${product.price}</Text>
+                        {product.isSpicy && (
+                          <View className="mt-1 rounded-full bg-red-100 px-2 py-1">
+                            <Text className="text-xs text-red-600">Spicy</Text>
+                          </View>
+                        )}
+                      </View>
 
-                    {/* Arrow */}
-                    <View className="ml-3">
-                      <Ionicons name="chevron-forward" size={16} color="#d1d5db" />
-                    </View>
-                  </TouchableOpacity>
-                ))}
+                      {/* Arrow */}
+                      <View className="ml-3">
+                        <Ionicons name="chevron-forward" size={16} color="#d1d5db" />
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             ) : searchQuery.length > 0 && !isSearching ? (
               <View className="items-center p-8">
@@ -287,7 +307,7 @@ export default function EnhancedNavbar() {
       {showSearchResults && (
         <TouchableOpacity
           onPress={clearSearch}
-          className="absolute bottom-0 left-0 right-0 top-full z-40 bg-black/20"
+          className="absolute bottom-0 left-0 right-0 top-full z-40 bg-black/40"
           style={{ height: 1000 }}
         />
       )}

@@ -44,8 +44,6 @@ export default function ProductShowcase() {
   const dropdownAnimation = useRef(new Animated.Value(0)).current;
   const headerAnimation = useRef(new Animated.Value(0)).current;
   const categories = ['All', 'Main Course', 'Sushi', 'Burgers', 'Healthy', 'Desserts', 'Asian'];
-
-  // Initialize header animation
   useEffect(() => {
     Animated.timing(headerAnimation, {
       toValue: 1,
@@ -125,12 +123,6 @@ export default function ProductShowcase() {
   const ProductCard = ({ product, index }: { product: Product; index: number }) => {
     const animatedValue = animatedValues[index];
     if (!animatedValue) return null;
-
-    const translateY = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [60, 0],
-    });
-
     const scale = animatedValue.interpolate({
       inputRange: [0, 1],
       outputRange: [0.9, 1],
@@ -139,7 +131,6 @@ export default function ProductShowcase() {
     return (
       <Animated.View
         style={{
-          transform: [{ translateY }, { scale }],
           marginBottom: 24,
         }}>
         <TouchableOpacity
@@ -151,7 +142,6 @@ export default function ProductShowcase() {
           <View className="relative">
             <Image source={{ uri: product.image }} className="h-64 w-full object-cover" />
             <View className="absolute inset-0 bg-black/10" />
-            {/* Top badges */}
             <View className="absolute left-4 top-4 flex-row space-x-2">
               {product.isVegetarian && (
                 <View className="rounded-full border-2 border-white bg-green-500 px-3 py-2 shadow-lg">
@@ -164,14 +154,10 @@ export default function ProductShowcase() {
                 </View>
               )}
             </View>
-
-            {/* Rating badge */}
             <View className="absolute right-4 top-4 flex-row items-center rounded-full bg-white/95 px-4 py-2 shadow-lg backdrop-blur-sm">
               <Ionicons name="star" size={16} color="#fbbf24" />
               <Text className="ml-1 text-sm font-bold text-gray-800">{product.rating}</Text>
             </View>
-
-            {/* Category badge */}
             <View className="absolute bottom-4 left-4 rounded-full bg-orange-500 px-4 py-2 shadow-lg">
               <Text className="text-sm font-bold text-white">{product.category}</Text>
             </View>
@@ -212,13 +198,10 @@ export default function ProductShowcase() {
                 </View>
               </View>
             </View>
-
-            {/* Enhanced Price and Action Section */}
             <View className="flex-row items-center justify-between border-t border-gray-100 pt-4">
               <View className="flex-1">
                 <View className="flex-row items-baseline">
                   <Text className="text-3xl font-extrabold text-orange-500">${product.price}</Text>
-                  <Text className="ml-2 text-sm font-medium text-gray-500">per serving</Text>
                 </View>
                 <View className="mt-1 flex-row items-center">
                   <View className="rounded-full bg-green-100 px-2 py-1">
@@ -259,17 +242,11 @@ export default function ProductShowcase() {
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
   });
-
-  const headerTranslateY = headerAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-50, 0],
-  });
-
   if (loading) {
     return (
       <>
         <StatusBar barStyle="light-content" backgroundColor="#f97316" />
-        <View className="flex-1 items-center justify-center bg-orange-50">
+        <View className="flex-1 items-center py-9 justify-center bg-orange-50">
           <View className="mx-8 items-center justify-center rounded-3xl border border-orange-100 bg-white p-16 shadow-2xl">
             <View className="mb-8 h-32 w-32 items-center justify-center rounded-full bg-orange-100">
               <Animated.View
@@ -292,7 +269,7 @@ export default function ProductShowcase() {
             <Text className="text-center text-base leading-6 text-gray-500">
               Please wait while we fetch our finest culinary creations
             </Text>
-            <View className="mt-6 flex-row space-x-2">
+            <View className="mt-6 gap-1 flex-row space-x-2">
               {[0, 1, 2].map((i) => (
                 <View key={i} className="h-2 w-2 animate-pulse rounded-full bg-orange-300" />
               ))}
@@ -308,7 +285,6 @@ export default function ProductShowcase() {
       <StatusBar barStyle="light-content" backgroundColor="#f97316" />
       <View className="flex-1 bg-orange-50">
         <Animated.View
-          style={{ transform: [{ translateY: headerTranslateY }] }}
           className="bg-orange-500 px-6 pb-8 pt-12 shadow-xl">
           <View className="items-center">
             <Text className="mb-3 text-center text-4xl font-bold leading-tight text-white">
@@ -335,8 +311,6 @@ export default function ProductShowcase() {
             </View>
           </View>
         </Animated.View>
-
-        {/* Enhanced Filter Section */}
         <View className="border-b border-orange-100 bg-white px-6 py-6 shadow-lg">
           <View className="flex-row items-center justify-between">
             <View className="flex-1">
@@ -365,8 +339,6 @@ export default function ProductShowcase() {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Enhanced Modal */}
         <Modal
           transparent={true}
           visible={showCategoryDropdown}
@@ -395,7 +367,6 @@ export default function ProductShowcase() {
               <View className="mb-4 border-b border-gray-100 pb-4">
                 <Text className="text-center text-lg font-bold text-gray-800">Select Category</Text>
               </View>
-
               {categories.map((category, index) => (
                 <TouchableOpacity
                   key={category}
@@ -417,27 +388,24 @@ export default function ProductShowcase() {
             </Animated.View>
           </Pressable>
         </Modal>
-
-        {/* Products List */}
         <ScrollView className="flex-1 px-3 py-6" showsVerticalScrollIndicator={false}>
           <View>
             {filteredProducts.map((product, index) => (
               <ProductCard key={product._id} product={product} index={index} />
             ))}
           </View>
-
-          {/* Enhanced Empty State */}
           {filteredProducts.length === 0 && (
             <View className="flex-1 items-center justify-center py-20">
               <View className="mb-6 rounded-full bg-orange-100 p-8">
                 <Ionicons name="restaurant" size={80} color="#f97316" />
               </View>
               <Text className="mb-3 text-2xl font-bold text-gray-800">No Dishes Found</Text>
-              <Text className="mb-8 max-w-xs text-center text-base leading-6 text-gray-500">
-                We couldn't find any dishes in the{' '}
-                <Text className="font-semibold text-orange-500">{selectedCategory}</Text> category.
-                Try exploring other categories.
+              <Text className="text-center text-base leading-6 text-gray-500">
+                {`We couldn't find any dishes in the `}
+                <Text className="font-semibold text-orange-500">{selectedCategory}</Text>
+                {` category. Try exploring other categories.`}
               </Text>
+
               <TouchableOpacity
                 onPress={() => setSelectedCategory('All')}
                 className="flex-row items-center rounded-2xl bg-orange-500 px-8 py-4 shadow-lg">

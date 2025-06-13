@@ -105,9 +105,8 @@ export default function EnhancedProfileScreen() {
       {
         text: 'Logout',
         style: 'destructive',
-        onPress: async () => {
-          await logout();
-          navigation.navigate('Login');
+        onPress: () => {
+          logout();
         },
       },
     ]);
@@ -298,7 +297,7 @@ export default function EnhancedProfileScreen() {
                   <Text className="mt-4 font-medium text-gray-500">Loading history...</Text>
                 </View>
               ) : pointsHistory.length > 0 ? (
-                <View className="space-y-4 flex-col gap-2">
+                <View className="flex-col gap-2 space-y-4">
                   {pointsHistory.slice(0, 5).map((transaction) => (
                     <View
                       key={transaction._id}

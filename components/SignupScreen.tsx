@@ -74,28 +74,13 @@ export default function SignupScreen() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const opacity = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-
-  const translateY = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [30, 0],
-  });
-
-  const scale = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.95, 1],
-  });
-
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#f97316" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 bg-orange-50">
-        <View className="rounded-b-[40px] bg-orange-500 px-6 pb-8 pt-12 shadow-lg">
+        <View className="rounded-b-[40px] bg-orange-500 px-3 pb-8 pt-12 shadow-lg">
           <View className="mb-6 flex-row items-center justify-between">
             <TouchableOpacity
               onPress={() => navigation.navigate('Home')}
@@ -118,11 +103,7 @@ export default function SignupScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <Animated.View
-            style={{
-              opacity,
-              transform: [{ translateY }, { scale }],
-            }}
-            className="px-6 py-8">
+            className="px-3 py-8">
             {/* Welcome Bonus Card */}
             <View className="mb-6 rounded-2xl border border-orange-100 bg-white p-6 shadow-lg">
               <View className="flex-row items-center">

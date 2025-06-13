@@ -35,7 +35,6 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
         <Stack.Screen name="Home" options={{ headerShown: false }}>
           {() => <MainContent>{children}</MainContent>}
         </Stack.Screen>
-
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen
@@ -43,7 +42,15 @@ export const ScreenContent = ({ path, children }: ScreenContentProps) => {
           component={ProductDetails}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+        {user && (
+          <>
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ headerShown: false }}
+            />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
